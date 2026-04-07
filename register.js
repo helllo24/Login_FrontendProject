@@ -5,7 +5,7 @@ document.getElementById("registerform").addEventListener("submit", function(e){
     //get credendtial
    const username = document.getElementById("username").value;
    const password = document.getElementById("password").value;
-   const email = document.getElementById("email").value;
+   const mail = document.getElementById("email").value;
 
    //call api
 
@@ -18,7 +18,7 @@ document.getElementById("registerform").addEventListener("submit", function(e){
      body: JSON.stringify({
         username:username,
         password:password,
-        mail : email
+        mail : mail
      })
    })
 
