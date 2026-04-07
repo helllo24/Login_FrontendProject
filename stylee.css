@@ -1,0 +1,181 @@
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+body{
+
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+
+background:linear-gradient(135deg,#667eea,#764ba2);
+
+}
+
+/* Form box */
+
+.form-container{
+
+background:white;
+
+padding:40px;
+
+width:320px;
+
+border-radius:10px;
+
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+
+animation:fadeIn 1s;
+
+}
+
+/* Title */
+
+h2{
+
+text-align:center;
+margin-bottom:20px;
+
+}
+
+/* Labels */
+
+label{
+
+display:block;
+margin-top:10px;
+font-weight:500;
+
+}
+
+/* Inputs */
+
+input{
+
+width:100%;
+padding:10px;
+
+margin-top:5px;
+
+border:1px solid #ccc;
+
+border-radius:5px;
+
+outline:none;
+
+transition:0.3s;
+
+}
+
+input:focus{
+
+border-color:#667eea;
+
+}
+
+/* Button */
+
+button{
+
+width:100%;
+
+margin-top:20px;
+
+padding:10px;
+
+border:none;
+
+border-radius:25px;
+
+background:linear-gradient(45deg,#ff6a00,#ff2e63);
+
+color:white;
+
+font-size:16px;
+
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+button:hover{
+
+transform:scale(1.05);
+
+}
+
+/* Message */
+
+#msg{
+
+margin-top:10px;
+text-align:center;
+color:green;
+
+}
+
+/* switch link */
+
+.switch{
+
+margin-top:15px;
+text-align:center;
+
+}
+
+.switch a{
+
+color:#667eea;
+text-decoration:none;
+font-weight:600;
+
+}
+
+.switch a:hover{
+
+text-decoration:underline;
+
+}
+
+/* Animation */
+
+@keyframes fadeIn{
+
+from{
+opacity:0;
+transform:translateY(20px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+.forgot{
+
+text-align:right;
+margin-top:5px;
+
+}
+
+.forgot a{
+
+font-size:13px;
+color:#667eea;
+text-decoration:none;
+
+}
+
+.forgot a:hover{
+
+text-decoration:underline;
+
+}

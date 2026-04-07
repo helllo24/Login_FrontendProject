@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee List</title>
+    <link rel="stylesheet" href="common.css">
+</head>
+
+<body>
+<div class="table-box">
+<h2>Employee List</h2>
+
+<table border="1">
+<thead>
+<tr>
+<th>empId</th>
+<th>empName</th>
+<th>empMailId</th>
+<th>department</th>
+<th>role</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="empTablebody"></tbody>
+</table>
+</div>
+
+<script>
+
+// 🔥 load employees
+function loadEmployees(){
+
+    fetch("https://login-employeemanagement-3.onrender.com/employee/findAll",{
+
+        method : "GET",
+
+        headers:{
+            "Authorization" : "Bearer " + localStorage.getItem("token")
+        }
+
+    })
+    .then(res=>res.json())
+    .then(data =>{
+        displayEmployess(data);
+    })
+    .catch(err =>{
+        console.log(err);
+    });
+}
+
+// 🔥 display table
+function displayEmployess(employee){
+
+    const tablebody = document.getElementById("empTablebody");
+    tablebody.innerHTML ="";
+
+    employee.forEach(emp => {
+
+        const row =`
+        <tr>
+            <td>${emp.empid}</td>
+            <td>${emp.empName}</td>
+            <td>${emp.empMailid}</td>
+            <td>${emp.department}</td>
+            <td>${emp.role}</td>
+
+            <td> 
+                <button onclick="editemp(${emp.empid})">Edit</button>
+                <button onclick="delemp(${emp.empid})">Delete</button>
+            </td>
+        </tr>
+        `;
+
+        tablebody.innerHTML += row;
+    });
+}
+
+// 🔥 edit
+function editemp(empid){
+
+    const confirmtoEdit = confirm("are you sure Edit the employee");
+
+    if(!confirmtoEdit){
+        return;
+    }
+
+    fetch(`https://login-employeemanagement-3.onrender.com/employee/findId/${empid}`,{
+
+        headers : {
+            "Authorization" : "Bearer " + localStorage.getItem("token")
+        }
+
+    })
+    .then(res => res.json())
+    .then(emp => {
+
+        localStorage.setItem("editEmp", JSON.stringify(emp));
+        window.location.href="updateEmp.html";
+
+    });
+}
+
+// 🔥 delete
+function delemp(empid){
+     const confirmDelete = confirm("Are you sure you want to delete?");
+
+     if(!confirmDelete){
+        return;
+     }
+
+    fetch(`https://login-employeemanagement-3.onrender.com/employee/del_emp/${empid}`,{
+
+        method : "DELETE",
+
+        headers : {
+            "Authorization" : "Bearer " + localStorage.getItem("token")
+        }
+
+    })
+    .then(res => res.text())
+    .then(msg =>{
+        alert(msg);
+        loadEmployees(); // 🔥 refresh correct way
+    });
+}
+
+// 🔥 initial load
+loadEmployees();
+
+</script>
+
+</body>
+</html>

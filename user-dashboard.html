@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USER-DASHBOARD</title>
+    <link rel="stylesheet" href="common.css">
+</head>
+<body>
+    <button onclick="userProfile()">Userdate</button>
+    <button onclick="logout()">logout</button>
+    <p id="profile"></p>
+
+</body>
+<script>
+
+    function userProfile(){
+
+const token = localStorage.getItem("token");
+
+fetch("https://login-employeemanagement-3.onrender.com/user/profile" ,{
+
+method:"GET",
+
+headers :{
+"Authorization" : "Bearer " + token
+}
+
+})
+
+.then(response=>response.text())
+
+.then(data =>{
+
+console.log("profile:" , data);
+
+document.getElementById("profile").innerText=data;
+
+})
+
+.catch(error =>{
+
+console.error(error);
+
+});
+
+}
+function logout(){
+
+localStorage.removeItem("token");
+window.location.href="login.html";
+
+
+
+}
+</script>
+</html>

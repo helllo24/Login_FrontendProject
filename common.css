@@ -1,0 +1,202 @@
+/* 🔥 RESET */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
+}
+
+/* 🔥 BODY */
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+background:linear-gradient(135deg,#667eea,#764ba2);
+}
+
+/* 🔥 FORM BOX */
+.form-container,
+form{
+background:white;
+padding:30px;
+width:400px;
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+animation:fadeIn 0.6s;
+}
+
+/* 🔥 TITLE */
+h2{
+text-align:center;
+margin-bottom:20px;
+color:#333;
+}
+
+/* 🔥 LABEL */
+label{
+display:block;
+margin-top:10px;
+font-weight:500;
+}
+
+/* 🔥 INPUT */
+input{
+width:100%;
+padding:10px;
+margin-top:5px;
+border:1px solid #ccc;
+border-radius:5px;
+outline:none;
+transition:0.3s;
+}
+
+input:focus{
+border-color:#667eea;
+}
+
+/* 🔥 BUTTON */
+button{
+width:100%;
+margin-top:15px;
+padding:10px;
+border:none;
+border-radius:25px;
+background:linear-gradient(45deg,#ff6a00,#ff2e63);
+color:white;
+font-size:15px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+/* 🔥 RESET BUTTON SMALL FIX */
+button[type="reset"]{
+background:gray;
+}
+
+/* 🔥 MESSAGE */
+#msg{
+margin-top:10px;
+text-align:center;
+color:green;
+}
+
+/* 🔥 LINKS */
+.switch{
+margin-top:15px;
+text-align:center;
+}
+
+.switch a{
+color:#667eea;
+text-decoration:none;
+font-weight:600;
+}
+
+.switch a:hover{
+text-decoration:underline;
+}
+
+/* 🔥 FORGOT */
+.forgot{
+text-align:right;
+margin-top:5px;
+}
+
+.forgot a{
+font-size:13px;
+color:#667eea;
+text-decoration:none;
+}
+
+.forgot a:hover{
+text-decoration:underline;
+}
+
+/* 🔥 TABLE CONTAINER */
+.table-box{
+width:90%;
+max-width:900px;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+animation:fadeIn 0.6s;
+}
+
+/* 🔥 TABLE */
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+/* 🔥 HEADER */
+th{
+background:#667eea;
+color:white;
+padding:10px;
+}
+
+/* 🔥 DATA */
+td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid #eee;
+}
+
+/* 🔥 ROW HOVER */
+tr:hover{
+background:#f5f5f5;
+}
+
+/* 🔥 ACTION BUTTONS */
+td button{
+width:auto;
+padding:5px 10px;
+margin:2px;
+border-radius:5px;
+}
+
+/* 🔥 DELETE BUTTON */
+td button:last-child{
+background:red;
+}
+
+td button:last-child:hover{
+background:darkred;
+}
+
+/* 🔥 DASHBOARD */
+body a{
+display:inline-block;
+margin:10px;
+padding:10px 15px;
+background:white;
+border-radius:5px;
+text-decoration:none;
+color:#333;
+font-weight:500;
+box-shadow:0 5px 10px rgba(0,0,0,0.1);
+}
+
+body a:hover{
+background:#667eea;
+color:white;
+}
+
+/* 🔥 ANIMATION */
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
