@@ -15,7 +15,9 @@
     <label>Employee MailId</label>
     <input type ="text" id="empmailid" required>
     <label>department</label>
-    <input type ="text" id="department" required>
+    <select id="department" required>
+        <option value="">--Select Department</option>
+    </select>
     <label>Role</label>
     <input type ="text" id="role" required>
     
@@ -26,6 +28,30 @@
       <p id="msg" ></p>
 </body>
 <script>
+    function loadDepartments() {
+    fetch("https://login-employeemanagement-3.onrender.com/depart/getDepart")
+        .then(res => res.json())
+        .then(res => {
+            const deptList = res.data;
+            const select = document.getElementById("department");
+
+            // clear old
+            select.innerHTML = '<option value="">-- Select Department --</option>';
+
+            deptList.forEach(dep => {
+                const option = document.createElement("option");
+                option.value = dep.id;
+                option.textContent = dep.name;
+                select.appendChild(option);
+            });
+        });
+}
+
+   // ✅ CALL ON PAGE LOAD
+    window.onload = function () {
+        loadDepartments();
+    };
+
 
 document.getElementById("addEmp").addEventListener("submit", function(e) {
 
@@ -33,7 +59,7 @@ document.getElementById("addEmp").addEventListener("submit", function(e) {
 
     const empname = document.getElementById("empname").value;
     const empmailid = document.getElementById("empmailid").value;
-    const department = document.getElementById("department").value;
+    const departmentId = document.getElementById("department").value;
     const role = document.getElementById("role").value;
 
     fetch("https://login-employeemanagement-3.onrender.com/employee/saveEmp", {
@@ -48,7 +74,7 @@ document.getElementById("addEmp").addEventListener("submit", function(e) {
         body: JSON.stringify({
             empName: empname,
             empMailid: empmailid,
-            department: department,
+            departmentId: departmentId,  // ✅ MUST
             role: role
         })
 
@@ -60,13 +86,8 @@ document.getElementById("addEmp").addEventListener("submit", function(e) {
         return response.text();
     })
     .then(data => {
-
-        // ✅ message show
         document.getElementById("msg").innerText = data;
-
-        // ✅ reset ONLY after success
         document.getElementById("addEmp").reset();
-
     })
     .catch(error => {
         console.error(error);
@@ -74,6 +95,7 @@ document.getElementById("addEmp").addEventListener("submit", function(e) {
     });
 
 });
+
 
 </script>
 </html>
