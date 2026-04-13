@@ -1,219 +1,35 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Employee Management System</title>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Segoe UI, sans-serif;
-}
-
-body{
-
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-
-background:linear-gradient(135deg,#5f72be,#9b23ea,#36d1dc);
-background-size:400% 400%;
-animation:gradientMove 10s ease infinite;
-
-}
-
-/* Gradient animation */
-
-@keyframes gradientMove{
-
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
-
-}
-
-.container{
-
-text-align:center;
-max-width:1000px;
-padding:20px;
-color:white;
-
-animation:fadeIn 1.5s ease;
-
-}
-
-/* Fade animation */
-
-@keyframes fadeIn{
-
-from{
-opacity:0;
-transform:translateY(30px);
-}
-
-to{
-opacity:1;
-transform:translateY(0);
-}
-
-}
-
-h1{
-
-font-size:42px;
-margin-bottom:10px;
-
-}
-
-.subtitle{
-
-margin-bottom:50px;
-opacity:0.9;
-
-}
-
-/* Cards layout */
-
-.cards{
-
-display:flex;
-justify-content:center;
-gap:25px;
-flex-wrap:wrap;
-
-}
-
-/* White cards */
-
-.card{
-
-background:white;
-color:#333;
-
-padding:30px;
-width:260px;
-
-border-radius:12px;
-
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-
-transition:0.3s;
-
-}
-
-/* Hover effect */
-
-.card:hover{
-
-transform:translateY(-12px) scale(1.03);
-
-box-shadow:0 15px 35px rgba(0,0,0,0.3);
-
-}
-
-.card h3{
-
-margin-bottom:10px;
-
-}
-
-/* Button */
-
-.start-btn{
-
-margin-top:50px;
-
-padding:15px 40px;
-
-border:none;
-
-border-radius:30px;
-
-font-size:16px;
-
-background:linear-gradient(45deg,#ff6a00,#ff2e63);
-
-color:white;
-
-cursor:pointer;
-
-transition:0.3s;
-
-box-shadow:0 6px 20px rgba(0,0,0,0.25);
-
-}
-
-/* Button hover */
-
-.start-btn:hover{
-
-transform:scale(1.1);
-
-box-shadow:0 10px 30px rgba(0,0,0,0.3);
-
-}
-
-/* Button click */
-
-.start-btn:active{
-
-transform:scale(0.95);
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management - Login</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <div class="auth-container">
+        <div id="login-box" class="card">
+            <h2>Sign In</h2>
+            <input type="email" id="login-email" placeholder="Email Address" required>
+            <button id="btn-request-otp">Send OTP</button>
+            
+            <div id="otp-section" style="display: none; margin-top: 15px;">
+                <input type="text" id="login-otp" placeholder="Enter 6-digit OTP">
+                <button id="btn-verify-otp">Verify & Login</button>
+            </div>
+            <p>New user? <a href="#" onclick="toggleAuth()">Register here</a></p>
+        </div>
 
-<div class="container">
-
-<h1>Employee Management System</h1>
-
-<p class="subtitle">
-Manage employee records efficiently with a clean and interactive interface.
-</p>
-
-<div class="cards">
-
-<div class="card">
-<h3>Employee Records</h3>
-<p>Store employee details like name, email and department securely.</p>
-</div>
-
-<div class="card">
-<h3>Easy Management</h3>
-<p>Add, edit and manage employee information quickly and easily.</p>
-</div>
-
-<div class="card">
-<h3>Organized Data</h3>
-<p>View employee records in a clean and structured layout.</p>
-</div>
-
-</div>
-
-<button class="start-btn" onclick="goToLogin()">Get Started</button>
-
-</div>
-
-<script>
-
-function goToLogin(){
-window.location.href="login.html";
-}
-
-</script>
-
+        <div id="register-box" class="card" style="display: none;">
+            <h2>Register Employee</h2>
+            <input type="text" id="reg-firstname" placeholder="First Name">
+            <input type="text" id="reg-lastname" placeholder="Last Name">
+            <input type="email" id="reg-email" placeholder="Email">
+            <input type="text" id="reg-designation" placeholder="Designation">
+            <button id="btn-register">Create Account</button>
+            <p>Already have an account? <a href="#" onclick="toggleAuth()">Login</a></p>
+        </div>
+    </div>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
