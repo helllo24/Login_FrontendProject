@@ -3,89 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    <title>Update Employee</title>
     <link rel="stylesheet" href="common.css">
 </head>
 <body>
-     <div class="form-container">
-    <form id = "updateEmp">
+    <div class="form-container">
+        <form id="updateEmp">
+            <label>Employee ID (Read-only)</label>
+            <input type="text" id="empid" readonly>
 
-<label>Enter Employee ID</label>
-        <input type="text" id="empid" >
+            <label>Employee Name</label>
+            <input type="text" id="empname" required>
 
-    <label>Employee Name</label>
-    <input type ="text" id="empname" required>
-    <label>Employee MailId</label>
-    <input type ="text" id="empmailid" required>
-    <label>department</label>
-    <input type ="text" id="department" required>
-    <label>Role</label>
-    <input type ="text" id="role" required>
+            <label>Employee MailId</label>
+            <input type="text" id="empmailid" required>
 
-<button type="submit">Update Employee</button>
+            <label>Department Name</label>
+            <input type="text" id="department" required>
+            <input type="hidden" id="deptId">
 
+            <label>Role</label>
+            <input type="text" id="role" required>
 
-    </form>
+            <button type="submit">Update Employee</button>
+        </form>
     </div>
 
-</body>
-
-
-
 <script>
-    window.onload = function(){
+    window.onload = function() {
+        const emp = JSON.parse(localStorage.getItem("editEmp"));
 
-    const emp = JSON.parse(localStorage.getItem("editEmp"));
+        if (emp) {
+            document.getElementById("empid").value = emp.empid;
+            document.getElementById("empname").value = emp.empName;
+            document.getElementById("empmailid").value = emp.empMailid;
+            document.getElementById("role").value = emp.role;
 
-    if(emp){
-        document.getElementById("empid").value = emp.empid;
-        document.getElementById("empname").value = emp.empName;
-        document.getElementById("empmailid").value = emp.empMailid;
-        document.getElementById("department").value = emp.department;
-        document.getElementById("role").value = emp.role;
-    }
-};
+            // FIX: Access the 'depname' property instead of the whole object
+            if (emp.department) {
+                document.getElementById("department").value = emp.department.depname;
+                document.getElementById("deptId").value = emp.department.id;
+            }
+        } else {
+            alert("No employee data found to edit.");
+            window.location.href = "viewEmp.html";
+        }
+    };
 
-document.getElementById("updateEmp").addEventListener("submit", function(e){
+    document.getElementById("updateEmp").addEventListener("submit", function(e) {
+        e.preventDefault();
 
-    e.preventDefault();
+        const empid = document.getElementById("empid").value;
+        const token = localStorage.getItem("token");
 
-    const empid = document.getElementById("empid").value;
-    const empname = document.getElementById("empname").value;
-    const empmailid = document.getElementById("empmailid").value;
-    const department = document.getElementById("department").value;
-    const role = document.getElementById("role").value;
+        // Construct the body to match your Backend Entity structure
+        const updatedData = {
+            empName: document.getElementById("empname").value,
+            empMailid: document.getElementById("empmailid").value,
+            role: document.getElementById("role").value,
+            // Passing the department as an object with its ID
+            department: { 
+                id: document.getElementById("deptId").value,
+                depname: document.getElementById("department").value 
+            }
+        };
 
-    fetch(`https://login-employeemanagement-3.onrender.com/employee/update/${empid}`,{
-
-        method : "PUT",
-
-        headers : {
-            "Content-Type":"application/json",
-            "Authorization" : "Bearer " + localStorage.getItem("token")
-        },
-
-        body : JSON.stringify({
-            empName: empname,
-            empMailid: empmailid,
-            department: department,
-            role: role
+        fetch(`https://login-employeemanagement-3.onrender.com/employee/update/${empid}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(updatedData)
         })
-
-    })
-    .then(res => res.text())
-    .then(data => {
-        alert(data);
-
-        localStorage.removeItem("editEmp");
-        window.location.href = "viewEmp.html";
-    })
-    .catch(err => {
-        console.error(err);
+        .then(res => {
+            if (!res.ok) throw new Error("Update failed with status: " + res.status);
+            return res.text();
+        })
+        .then(data => {
+            alert("✅ " + data);
+            localStorage.removeItem("editEmp");
+            window.location.href = "viewEmp.html";
+        })
+        .catch(err => {
+            console.error("Update Error:", err);
+            alert("❌ Failed to update employee. Check console for details.");
+        });
     });
-
-});
-
 </script>
+</body>
 </html>
