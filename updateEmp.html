@@ -29,14 +29,15 @@
         </form>
     </div>
 
-<script>window.onload = function() {
+<script>
+window.onload = function() {
     const emp = JSON.parse(localStorage.getItem("editEmp"));
     if (emp) {
         document.getElementById("empid").value = emp.empid;
         document.getElementById("empname").value = emp.empName;
         document.getElementById("empmailid").value = emp.empMailid;
         document.getElementById("role").value = emp.role;
-        // Fix for [object Object]
+        // Correctly handle the department object display
         document.getElementById("department").value = emp.department ? emp.department.depname : "";
     }
 };
@@ -45,13 +46,12 @@ document.getElementById("updateEmp").addEventListener("submit", function(e) {
     e.preventDefault();
 
     const empid = document.getElementById("empid").value;
-    const token = localStorage.getItem("token"); // Get current token
+    const token = localStorage.getItem("token");
 
     const updatedData = {
         empName: document.getElementById("empname").value,
         empMailid: document.getElementById("empmailid").value,
         role: document.getElementById("role").value,
-        // Match your backend Entity structure
         department: { 
             depname: document.getElementById("department").value 
         }
@@ -61,23 +61,23 @@ document.getElementById("updateEmp").addEventListener("submit", function(e) {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + token // Ensure space after 'Bearer'
+            "Authorization": "Bearer " + token // Ensure there is a space after Bearer
         },
         body: JSON.stringify(updatedData)
     })
     .then(res => {
         if (res.status === 403) {
-            throw new Error("403 Forbidden: Check backend SecurityConfig or Token validity.");
+            throw new Error("403: Check if your user is an ADMIN in the database.");
         }
         return res.text();
     })
     .then(data => {
-        alert("Success: " + data);
+        alert("✅ " + data);
         localStorage.removeItem("editEmp");
         window.location.href = "viewEmp.html";
     })
     .catch(err => {
-        console.error("Update Error:", err);
+        console.error(err);
         alert(err.message);
     });
 });
