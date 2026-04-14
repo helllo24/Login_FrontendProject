@@ -18,8 +18,8 @@
             <label>Employee MailId</label>
             <input type="text" id="empmailid" required>
 
-            <label>Department Name</label>
-            <input type="text" id="department" required>
+            <label>Department Name (Read-only)</label>
+            <input type="text" id="deptName" readonly>
             <input type="hidden" id="deptId">
 
             <label>Role</label>
@@ -30,57 +30,64 @@
     </div>
 
 <script>
-window.onload = function() {
-    const emp = JSON.parse(localStorage.getItem("editEmp"));
-    if (emp) {
-        document.getElementById("empid").value = emp.empid;
-        document.getElementById("empname").value = emp.empName;
-        document.getElementById("empmailid").value = emp.empMailid;
-        document.getElementById("role").value = emp.role;
-        // Correctly handle the department object display
-        document.getElementById("department").value = emp.department ? emp.department.depname : "";
-    }
-};
+    window.onload = function() {
+        const emp = JSON.parse(localStorage.getItem("editEmp"));
 
-document.getElementById("updateEmp").addEventListener("submit", function(e) {
-    e.preventDefault();
+        if (emp) {
+            document.getElementById("empid").value = emp.empid;
+            document.getElementById("empname").value = emp.empName;
+            document.getElementById("empmailid").value = emp.empMailid;
+            document.getElementById("role").value = emp.role;
 
-    const empid = document.getElementById("empid").value;
-    const token = localStorage.getItem("token");
-
-    const updatedData = {
-        empName: document.getElementById("empname").value,
-        empMailid: document.getElementById("empmailid").value,
-        role: document.getElementById("role").value,
-        department: { 
-            depname: document.getElementById("department").value 
+            // Map the nested department object to the name field and hidden ID field
+            if (emp.department) {
+                document.getElementById("deptName").value = emp.department.depname;
+                document.getElementById("deptId").value = emp.department.id;
+            }
+        } else {
+            alert("No employee data found.");
+            window.location.href = "viewEmp.html";
         }
     };
 
-    fetch(`https://login-employeemanagement-3.onrender.com/employee/update/${empid}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token // Ensure there is a space after Bearer
-        },
-        body: JSON.stringify(updatedData)
-    })
-    .then(res => {
-        if (res.status === 403) {
-            throw new Error("403: Check if your user is an ADMIN in the database.");
-        }
-        return res.text();
-    })
-    .then(data => {
-        alert("✅ " + data);
-        localStorage.removeItem("editEmp");
-        window.location.href = "viewEmp.html";
-    })
-    .catch(err => {
-        console.error(err);
-        alert(err.message);
+    document.getElementById("updateEmp").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const empid = document.getElementById("empid").value;
+        const token = localStorage.getItem("token");
+
+        // Prepare data exactly as your Java EmpDto expects it
+        const updatedData = {
+            empName: document.getElementById("empname").value,
+            empMailid: document.getElementById("empmailid").value,
+            role: document.getElementById("role").value,
+            departmentId: parseInt(document.getElementById("deptId").value)
+        };
+
+        fetch(`https://login-employeemanagement-3.onrender.com/employee/update/${empid}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(updatedData)
+        })
+        .then(res => {
+            if (res.status === 403) {
+                throw new Error("403 Forbidden: Ensure your user has ROLE_ADMIN in the database.");
+            }
+            return res.text();
+        })
+        .then(data => {
+            alert("Success: Employee updated!");
+            localStorage.removeItem("editEmp");
+            window.location.href = "viewEmp.html";
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Update Failed: " + err.message);
+        });
     });
-});
 </script>
 </body>
 </html>
