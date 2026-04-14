@@ -49,32 +49,39 @@ function loadEmployees(){
 }
 
 // 🔥 display table
-function displayEmployess(employee){
-
+function displayEmployess(employee) {
     const tablebody = document.getElementById("empTablebody");
-    tablebody.innerHTML ="";
+    tablebody.innerHTML = "";
 
-    employee.forEach(emp => {
+    // The backend usually returns an object like { success: true, data: [...] }
+    // Check if employee is the array or if it's inside employee.data
+    const empList = employee.data || employee;
 
-        const row =`
-        <tr>
-            <td>${emp.empid}</td>
-            <td>${emp.empName}</td>
-            <td>${emp.empMailid}</td>
-            <td>${emp.department}</td>
-            <td>${emp.role}</td>
+    if (empList && Array.isArray(empList)) {
+        empList.forEach(emp => {
+            // FIX: Access the nested department name
+            // If department is null, show "N/A" to avoid errors
+            const deptName = emp.department ? emp.department.depname : "No Department";
 
-            <td> 
-                <button onclick="editemp(${emp.empid})">Edit</button>
-                <button onclick="delemp(${emp.empid})">Delete</button>
-            </td>
-        </tr>
-        `;
-
-        tablebody.innerHTML += row;
-    });
+            const row = `
+            <tr>
+                <td>${emp.empid}</td>
+                <td>${emp.empName}</td>
+                <td>${emp.empMailid}</td>
+                <td>${deptName}</td> 
+                <td>${emp.role}</td>
+                <td> 
+                    <button onclick="editemp(${emp.empid})">Edit</button>
+                    <button onclick="delemp(${emp.empid})">Delete</button>
+                </td>
+            </tr>
+            `;
+            tablebody.innerHTML += row;
+        });
+    } else {
+        tablebody.innerHTML = "<tr><td colspan='6'>No employees found.</td></tr>";
+    }
 }
-
 // 🔥 edit
 function editemp(empid){
 
