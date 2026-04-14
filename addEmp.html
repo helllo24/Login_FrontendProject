@@ -29,7 +29,14 @@
 </body>
 <script>
     function loadDepartments() {
-    fetch("https://login-employeemanagement-3.onrender.com/depart/getDepart")
+        const token = localStorage.getItem("token");
+    fetch("https://login-employeemanagement-3.onrender.com/depart/getDepart", {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`, // Add the header
+            "Content-Type": "application/json"
+        }
+    })
         .then(res => res.json())
         .then(res => {
             const deptList = res.data || res;
