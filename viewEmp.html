@@ -23,118 +23,101 @@
 
 <tbody id="empTablebody"></tbody>
 </table>
+<button onclick="BacktoDash()">Back</button>
 </div>
 
 <script>
-
 // 🔥 load employees
-function loadEmployees(){
-
-    fetch("https://login-employeemanagement-3.onrender.com/employee/findAll",{
-
-        method : "GET",
-
-        headers:{
-            "Authorization" : "Bearer " + localStorage.getItem("token")
+function loadEmployees() {
+    fetch("https://login-employeemanagement-3.onrender.com/employee/findAll", {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
         }
-
     })
-    .then(res=>res.json())
-    .then(data =>{
-        displayEmployess(data);
+    .then(res => res.json())
+    .then(data => {
+        // Handle potential wrapper objects (e.g., if backend sends { data: [...] })
+        const empList = data.data || data; 
+        displayEmployess(empList);
     })
-    .catch(err =>{
-        console.log(err);
+    .catch(err => {
+        console.error("Fetch Error:", err);
     });
 }
 
 // 🔥 display table
-function displayEmployess(employee) {
+function displayEmployess(employeeList) {
     const tablebody = document.getElementById("empTablebody");
     tablebody.innerHTML = "";
 
-    // The backend usually returns an object like { success: true, data: [...] }
-    // Check if employee is the array or if it's inside employee.data
-    const empList = employee.data || employee;
-
-    if (empList && Array.isArray(empList)) {
-        empList.forEach(emp => {
-            // FIX: Access the nested department name
-            // If department is null, show "N/A" to avoid errors
-            const deptName = emp.department ? emp.department.depname : "No Department";
-
-            const row = `
-            <tr>
-                <td>${emp.empid}</td>
-                <td>${emp.empName}</td>
-                <td>${emp.empMailid}</td>
-                <td>${deptName}</td> 
-                <td>${emp.role}</td>
-                <td> 
-                    <button onclick="editemp(${emp.empid})">Edit</button>
-                    <button onclick="delemp(${emp.empid})">Delete</button>
-                </td>
-            </tr>
-            `;
-            tablebody.innerHTML += row;
-        });
-    } else {
-        tablebody.innerHTML = "<tr><td colspan='6'>No employees found.</td></tr>";
-    }
-}
-// 🔥 edit
-function editemp(empid){
-
-    const confirmtoEdit = confirm("are you sure Edit the employee");
-
-    if(!confirmtoEdit){
+    if (!Array.isArray(employeeList)) {
+        console.error("Expected an array but received:", employeeList);
         return;
     }
 
-    fetch(`https://login-employeemanagement-3.onrender.com/employee/findId/${empid}`,{
+    employeeList.forEach(emp => {
+        // FIX: Access the name inside the department object
+        // We use a check (emp.department ?) to prevent errors if department is null
+        const deptName = emp.department ? emp.department.depname : "No Dept";
 
-        headers : {
-            "Authorization" : "Bearer " + localStorage.getItem("token")
+        const row = `
+        <tr>
+            <td>${emp.empid}</td>
+            <td>${emp.empName}</td>
+            <td>${emp.empMailid}</td>
+            <td>${deptName}</td> 
+            <td>${emp.role}</td>
+            <td> 
+                <button onclick="editemp(${emp.empid})">Edit</button>
+                <button onclick="delemp(${emp.empid})">Delete</button>
+            </td>
+        </tr>
+        `;
+
+        tablebody.innerHTML += row;
+    });
+}
+
+// 🔥 edit
+function editemp(empid) {
+    if (!confirm("Are you sure you want to edit this employee?")) return;
+
+    fetch(`https://login-employeemanagement-3.onrender.com/employee/findId/${empid}`, {
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
         }
-
     })
     .then(res => res.json())
     .then(emp => {
-
         localStorage.setItem("editEmp", JSON.stringify(emp));
-        window.location.href="updateEmp.html";
-
+        window.location.href = "updateEmp.html";
     });
 }
 
 // 🔥 delete
-function delemp(empid){
-     const confirmDelete = confirm("Are you sure you want to delete?");
+function delemp(empid) {
+    if (!confirm("Are you sure you want to delete?")) return;
 
-     if(!confirmDelete){
-        return;
-     }
-
-    fetch(`https://login-employeemanagement-3.onrender.com/employee/del_emp/${empid}`,{
-
-        method : "DELETE",
-
-        headers : {
-            "Authorization" : "Bearer " + localStorage.getItem("token")
+    fetch(`https://login-employeemanagement-3.onrender.com/employee/del_emp/${empid}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
         }
-
     })
     .then(res => res.text())
-    .then(msg =>{
+    .then(msg => {
         alert(msg);
-        loadEmployees(); // 🔥 refresh correct way
+        loadEmployees(); 
     });
+}
+
+function BacktoDash(){
+    window.location.href="admin-dashboard.html";
 }
 
 // 🔥 initial load
 loadEmployees();
-
 </script>
-
 </body>
 </html>

@@ -26,6 +26,7 @@
             <button type="submit">Add Employee</button>
             <button type="reset">Reset</button>
         </form>
+        <button onclick="BacktoDash()">Back</button>
     </div>
     <p id="msg"></p>
 
@@ -115,6 +116,9 @@
             document.getElementById("msg").innerText = "❌ Error: " + error.message;
         });
     });
+    function BacktoDash(){
+    window.location.href="admin-dashboard.html";
+}
 </script>
 </body>
 </html>

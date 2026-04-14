@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Department</title>
+    <link rel="stylesheet" href="common.css">
 </head>
 <body>
 
@@ -11,6 +12,8 @@
 
     <input type="text" id="deptName" placeholder="Enter Department" required>
     <button onclick="addDepartment()">Add</button>
+
+    <button onclick="BacktoDash()">Back</button>
 
     <p id="msg"></p>
 
@@ -48,6 +51,10 @@ const token = localStorage.getItem("token");
         console.error(error);
         document.getElementById("msg").innerText = "❌ Error adding department";
     });
+}
+
+function BacktoDash(){
+    window.location.href="admin-dashboard.html";
 }
 
 </script>
