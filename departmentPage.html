@@ -27,7 +27,8 @@ function addDepartment() {
     fetch("https://login-employeemanagement-3.onrender.com/depart/savedepart", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({ name: name })
     })
