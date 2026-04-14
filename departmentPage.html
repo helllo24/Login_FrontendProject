@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Department</title>
+</head>
+<body>
+
+    <h2>Add Department</h2>
+
+    <input type="text" id="deptName" placeholder="Enter Department" required>
+    <button onclick="addDepartment()">Add</button>
+
+    <p id="msg"></p>
+
+<script>
+
+function addDepartment() {
+    const name = document.getElementById("deptName").value;
+
+    if (!name) {
+        document.getElementById("msg").innerText = "❌ Enter department name";
+        return;
+    }
+
+    fetch("https://login-employeemanagement-3.onrender.com/depart/savedepart", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name: name })
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error("Failed to add department");
+        }
+        return res.json();
+    })
+    .then(data => {
+        document.getElementById("msg").innerText = "✅ Department Added";
+
+        // clear input
+        document.getElementById("deptName").value = "";
+    })
+    .catch(error => {
+        console.error(error);
+        document.getElementById("msg").innerText = "❌ Error adding department";
+    });
+}
+
+</script>
+
+</body>
+</html>

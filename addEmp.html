@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADD EMPLOYEE</title>
+
+    <link rel="stylesheet" href="common.css">
+</head>
+<body>
+    <div class="form-container">
+<form id="addEmp">
+    <label>Employee Name</label>
+    <input type ="text" id="empname" required>
+    <label>Employee MailId</label>
+    <input type ="text" id="empmailid" required>
+    <label>department</label>
+    <select id="department" required>
+        <option value="">--Select Department</option>
+    </select>
+    <label>Role</label>
+    <input type ="text" id="role" required>
+    
+      <button type="submit" >AddEmployee</button>
+      <button type="reset" >Reset</button>
+</form>
+</div>
+      <p id="msg" ></p>
+</body>
+<script>
+    function loadDepartments() {
+    fetch("https://login-employeemanagement-3.onrender.com/depart/getDepart")
+        .then(res => res.json())
+        .then(res => {
+            const deptList = res.data || res;
+            const select = document.getElementById("department");
+
+            // clear old
+            select.innerHTML = '<option value="">-- Select Department --</option>';
+
+            deptList.forEach(dep => {
+                const option = document.createElement("option");
+                option.value = dep.id;
+                option.textContent = dep.name;
+                select.appendChild(option);
+            });
+        });
+}
+
+   // ✅ CALL ON PAGE LOAD
+    window.onload = function () {
+        loadDepartments();
+    };
+
+
+document.getElementById("addEmp").addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const empname = document.getElementById("empname").value;
+    const empmailid = document.getElementById("empmailid").value;
+    const departmentId = document.getElementById("department").value;
+    const role = document.getElementById("role").value;
+
+    fetch("https://login-employeemanagement-3.onrender.com/employee/saveEmp", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+
+        body: JSON.stringify({
+            empName: empname,
+            empMailid: empmailid,
+            departmentId: departmentId,  // ✅ MUST
+            role: role
+        })
+
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Failed to add employee");
+        }
+        return response.text();
+    })
+    .then(data => {
+        document.getElementById("msg").innerText = data;
+        document.getElementById("addEmp").reset();
+    })
+    .catch(error => {
+        console.error(error);
+        document.getElementById("msg").innerText = "Error adding employee";
+    });
+
+});
+
+
+</script>
+</html>

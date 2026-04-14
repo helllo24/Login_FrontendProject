@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="common.css">
+</head>
+<body>
+     <div class="form-container">
+    <form id = "updateEmp">
+
+<label>Enter Employee ID</label>
+        <input type="text" id="empid" >
+
+    <label>Employee Name</label>
+    <input type ="text" id="empname" required>
+    <label>Employee MailId</label>
+    <input type ="text" id="empmailid" required>
+    <label>department</label>
+    <input type ="text" id="department" required>
+    <label>Role</label>
+    <input type ="text" id="role" required>
+
+<button type="submit">Update Employee</button>
+
+
+    </form>
+    </div>
+
+</body>
+
+
+
+<script>
+    window.onload = function(){
+
+    const emp = JSON.parse(localStorage.getItem("editEmp"));
+
+    if(emp){
+        document.getElementById("empid").value = emp.empid;
+        document.getElementById("empname").value = emp.empName;
+        document.getElementById("empmailid").value = emp.empMailid;
+        document.getElementById("department").value = emp.department;
+        document.getElementById("role").value = emp.role;
+    }
+};
+
+document.getElementById("updateEmp").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    const empid = document.getElementById("empid").value;
+    const empname = document.getElementById("empname").value;
+    const empmailid = document.getElementById("empmailid").value;
+    const department = document.getElementById("department").value;
+    const role = document.getElementById("role").value;
+
+    fetch(`https://login-employeemanagement-3.onrender.com/employee/update/${empid}`,{
+
+        method : "PUT",
+
+        headers : {
+            "Content-Type":"application/json",
+            "Authorization" : "Bearer " + localStorage.getItem("token")
+        },
+
+        body : JSON.stringify({
+            empName: empname,
+            empMailid: empmailid,
+            department: department,
+            role: role
+        })
+
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert(data);
+
+        localStorage.removeItem("editEmp");
+        window.location.href = "viewEmp.html";
+    })
+    .catch(err => {
+        console.error(err);
+    });
+
+});
+
+</script>
+</html>
