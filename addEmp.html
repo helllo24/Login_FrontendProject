@@ -4,76 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADD EMPLOYEE</title>
-
     <link rel="stylesheet" href="common.css">
 </head>
 <body>
     <div class="form-container">
-<form id="addEmp">
-    <label>Employee Name</label>
-    <input type ="text" id="empname" required>
-    <label>Employee MailId</label>
-    <input type ="text" id="empmailid" required>
-    <label>department</label>
-    <select id="department" required>
-        <option value="">--Select Department</option>
-    </select>
-    <label>Role</label>
-    <input type ="text" id="role" required>
-    
-      <button type="submit" >AddEmployee</button>
-      <button type="reset" >Reset</button>
-</form>
-</div>
-      <p id="msg" ></p>
-</body>
+        <form id="addEmp">
+            <label>Employee Name</label>
+            <input type="text" id="empname" required>
+            
+            <label>Employee MailId</label>
+            <input type="text" id="empmailid" required>
+            
+            <label>Department</label>
+            <select id="department" required>
+                <option value="">--Select Department--</option>
+            </select>
+            
+            <label>Role</label>
+            <input type="text" id="role" required>
+            
+            <button type="submit">Add Employee</button>
+            <button type="reset">Reset</button>
+        </form>
+    </div>
+    <p id="msg"></p>
+
 <script>
-    // Function to load departments into the dropdown
     function loadDepartments() {
         const token = localStorage.getItem("token"); 
 
         if (!token) {
-            document.getElementById("msg").innerText = "⚠️ Please login first.";
+            document.getElementById("msg").innerText = "⚠️ No token found. Please login again.";
             return;
         }
+
+        console.log("Fetching departments with token:", token);
 
         fetch("https://login-employeemanagement-3.onrender.com/depart/getDepart", {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`,
+                "Authorization": "Bearer " + token,
                 "Content-Type": "application/json"
             }
         })
         .then(res => {
-            if (!res.ok) throw new Error("Status: " + res.status);
+            if (res.status === 403) {
+                throw new Error("403 Forbidden: Your token is invalid or you don't have Admin permissions.");
+            }
+            if (!res.ok) throw new Error("Server Error: " + res.status);
             return res.json();
         })
         .then(res => {
-            const deptlist = res.data || res; // Handles different response formats
+            // Some backends wrap the list in a 'data' property
+            const deptlist = res.data || res; 
             const select = document.getElementById("department");
             select.innerHTML = '<option value="">-- Select Department --</option>';
 
             if (deptlist && Array.isArray(deptlist)) {
                 deptlist.forEach(dep => {
-                    console.log("Current Department Object:", dep);
+                    console.log("Mapping department:", dep);
                     const option = document.createElement("option");
                     option.value = dep.id;
-                    option.textContent = dep.depname; // Matches your Java Entity 'depname'
+                    // Using 'depname' as defined in your DepartmentEntity.java
+                    option.textContent = dep.depname || "Unnamed Department"; 
                     select.appendChild(option);
                 });
+            } else {
+                console.error("Department list is not an array:", deptlist);
             }
         })
         .catch(err => {
             console.error("Load Error:", err);
+            document.getElementById("msg").innerText = "❌ " + err.message;
         });
     }
 
-    // Run load function when page opens
     window.onload = loadDepartments;
 
-    // Handle Form Submission
     document.getElementById("addEmp").addEventListener("submit", function(e) {
         e.preventDefault();
+        const token = localStorage.getItem("token");
 
         const data = {
             empName: document.getElementById("empname").value,
@@ -86,24 +96,25 @@
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
+                "Authorization": "Bearer " + token
             },
             body: JSON.stringify(data)
         })
         .then(response => {
-            if (!response.ok) throw new Error("Failed to add employee");
+            if (!response.ok) throw new Error("Failed to add employee (Status: " + response.status + ")");
             return response.text();
         })
-        .then(data => {
+        .then(result => {
             document.getElementById("msg").style.color = "green";
-            document.getElementById("msg").innerText = "✅ " + data;
+            document.getElementById("msg").innerText = "✅ " + result;
             document.getElementById("addEmp").reset();
-            loadDepartments(); // Refresh list if needed
         })
         .catch(error => {
+            console.error("Submit Error:", error);
             document.getElementById("msg").style.color = "red";
-            document.getElementById("msg").innerText = "❌ Error adding employee";
+            document.getElementById("msg").innerText = "❌ Error: " + error.message;
         });
     });
 </script>
+</body>
 </html>
