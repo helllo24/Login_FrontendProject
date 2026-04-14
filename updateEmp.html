@@ -29,67 +29,58 @@
         </form>
     </div>
 
-<script>
-    window.onload = function() {
-        const emp = JSON.parse(localStorage.getItem("editEmp"));
+<script>window.onload = function() {
+    const emp = JSON.parse(localStorage.getItem("editEmp"));
+    if (emp) {
+        document.getElementById("empid").value = emp.empid;
+        document.getElementById("empname").value = emp.empName;
+        document.getElementById("empmailid").value = emp.empMailid;
+        document.getElementById("role").value = emp.role;
+        // Fix for [object Object]
+        document.getElementById("department").value = emp.department ? emp.department.depname : "";
+    }
+};
 
-        if (emp) {
-            document.getElementById("empid").value = emp.empid;
-            document.getElementById("empname").value = emp.empName;
-            document.getElementById("empmailid").value = emp.empMailid;
-            document.getElementById("role").value = emp.role;
+document.getElementById("updateEmp").addEventListener("submit", function(e) {
+    e.preventDefault();
 
-            // FIX: Access the 'depname' property instead of the whole object
-            if (emp.department) {
-                document.getElementById("department").value = emp.department.depname;
-                document.getElementById("deptId").value = emp.department.id;
-            }
-        } else {
-            alert("No employee data found to edit.");
-            window.location.href = "viewEmp.html";
+    const empid = document.getElementById("empid").value;
+    const token = localStorage.getItem("token"); // Get current token
+
+    const updatedData = {
+        empName: document.getElementById("empname").value,
+        empMailid: document.getElementById("empmailid").value,
+        role: document.getElementById("role").value,
+        // Match your backend Entity structure
+        department: { 
+            depname: document.getElementById("department").value 
         }
     };
 
-    document.getElementById("updateEmp").addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const empid = document.getElementById("empid").value;
-        const token = localStorage.getItem("token");
-
-        // Construct the body to match your Backend Entity structure
-        const updatedData = {
-            empName: document.getElementById("empname").value,
-            empMailid: document.getElementById("empmailid").value,
-            role: document.getElementById("role").value,
-            // Passing the department as an object with its ID
-            department: { 
-                id: document.getElementById("deptId").value,
-                depname: document.getElementById("department").value 
-            }
-        };
-
-        fetch(`https://login-employeemanagement-3.onrender.com/employee/update/${empid}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify(updatedData)
-        })
-        .then(res => {
-            if (!res.ok) throw new Error("Update failed with status: " + res.status);
-            return res.text();
-        })
-        .then(data => {
-            alert("✅ " + data);
-            localStorage.removeItem("editEmp");
-            window.location.href = "viewEmp.html";
-        })
-        .catch(err => {
-            console.error("Update Error:", err);
-            alert("❌ Failed to update employee. Check console for details.");
-        });
+    fetch(`https://login-employeemanagement-3.onrender.com/employee/update/${empid}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token // Ensure space after 'Bearer'
+        },
+        body: JSON.stringify(updatedData)
+    })
+    .then(res => {
+        if (res.status === 403) {
+            throw new Error("403 Forbidden: Check backend SecurityConfig or Token validity.");
+        }
+        return res.text();
+    })
+    .then(data => {
+        alert("Success: " + data);
+        localStorage.removeItem("editEmp");
+        window.location.href = "viewEmp.html";
+    })
+    .catch(err => {
+        console.error("Update Error:", err);
+        alert(err.message);
     });
+});
 </script>
 </body>
 </html>
