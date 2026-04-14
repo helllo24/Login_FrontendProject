@@ -23,7 +23,7 @@ function addDepartment() {
         document.getElementById("msg").innerText = "❌ Enter department name";
         return;
     }
-
+const token = localStorage.getItem("token");
     fetch("https://login-employeemanagement-3.onrender.com/depart/savedepart", {
         method: "POST",
         headers: {
