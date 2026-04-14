@@ -28,103 +28,82 @@
       <p id="msg" ></p>
 </body>
 <script>
+    // Function to load departments into the dropdown
     function loadDepartments() {
-    // 1. Get the token from localStorage
-    const token = localStorage.getItem("token"); 
+        const token = localStorage.getItem("token"); 
 
-    if (!token) {
-        console.error("No token found. Please login.");
-        return;
+        if (!token) {
+            document.getElementById("msg").innerText = "⚠️ Please login first.";
+            return;
+        }
+
+        fetch("https://login-employeemanagement-3.onrender.com/depart/getDepart", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Status: " + res.status);
+            return res.json();
+        })
+        .then(res => {
+            const deptlist = res.data || res; // Handles different response formats
+            const select = document.getElementById("department");
+            select.innerHTML = '<option value="">-- Select Department --</option>';
+
+            if (deptlist && Array.isArray(deptlist)) {
+                deptlist.forEach(dep => {
+                    console.log("Current Department Object:", dep);
+                    const option = document.createElement("option");
+                    option.value = dep.id;
+                    option.textContent = dep.departmentname; // Matches your Java Entity 'depname'
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(err => {
+            console.error("Load Error:", err);
+        });
     }
 
-    fetch("https://login-employeemanagement-3.onrender.com/depart/getDepart", {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`, // Ensure space after 'Bearer'
-            "Content-Type": "application/json"
-        }
-    })
-    .then(res => {
-        if (!res.ok) {
-            // If this triggers, check your SecurityConfig ROLE permissions
-            throw new Error("HTTP error! status: " + res.status);
-        }
-        return res.json();
-    })
-    .then(res => {
-        // Your backend returns a Response object with a .data field
-        const deptlist = res.data; 
-        const select = document.getElementById("department");
+    // Run load function when page opens
+    window.onload = loadDepartments;
 
-        // Clear existing options except the placeholder
-        select.innerHTML = '<option value="">-- Select Department --</option>';
+    // Handle Form Submission
+    document.getElementById("addEmp").addEventListener("submit", function(e) {
+        e.preventDefault();
 
-        if (deptlist && Array.isArray(deptlist)) {
-            deptlist.forEach(dep => {
-                const option = document.createElement("option");
-                option.value = dep.id;
-                
-                // IMPORTANT: This must match 'depname' from your Java Entity
-                option.textContent = dep.depname; 
-                
-                select.appendChild(option);
-            });
-        }
-    })
-    .catch(err => {
-        console.error("Error loading departments:", err);
-        document.getElementById("msg").innerText = "Failed to load departments. Check console.";
-    });
-}
-   // ✅ CALL ON PAGE LOAD
-    window.onload = function () {
-        loadDepartments();
-    };
+        const data = {
+            empName: document.getElementById("empname").value,
+            empMailid: document.getElementById("empmailid").value,
+            departmentId: document.getElementById("department").value,
+            role: document.getElementById("role").value
+        };
 
-
-document.getElementById("addEmp").addEventListener("submit", function(e) {
-
-    e.preventDefault();
-
-    const empname = document.getElementById("empname").value;
-    const empmailid = document.getElementById("empmailid").value;
-    const departmentId = document.getElementById("department").value;
-    const role = document.getElementById("role").value;
-
-    fetch("https://login-employeemanagement-3.onrender.com/employee/saveEmp", {
-
-        method: "POST",
-
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        },
-
-        body: JSON.stringify({
-            empName: empname,
-            empMailid: empmailid,
-            departmentId: departmentId,  // ✅ MUST
-            role: role
+        fetch("https://login-employeemanagement-3.onrender.com/employee/saveEmp", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify(data)
         })
-
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Failed to add employee");
-        }
-        return response.text();
-    })
-    .then(data => {
-        document.getElementById("msg").innerText = data;
-        document.getElementById("addEmp").reset();
-    })
-    .catch(error => {
-        console.error(error);
-        document.getElementById("msg").innerText = "Error adding employee";
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to add employee");
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById("msg").style.color = "green";
+            document.getElementById("msg").innerText = "✅ " + data;
+            document.getElementById("addEmp").reset();
+            loadDepartments(); // Refresh list if needed
+        })
+        .catch(error => {
+            document.getElementById("msg").style.color = "red";
+            document.getElementById("msg").innerText = "❌ Error adding employee";
+        });
     });
-
-});
-
-
 </script>
 </html>
