@@ -30,7 +30,7 @@
 // 🔥 load employees
 function loadEmployees(){
 
-    fetch("https://login-employeemanagement-3.onrender.com/employee/findAll",{
+    fetch("https://helllo24.github.io/Login_FrontendProject/employee/findAll",{
 
         method : "GET",
 
@@ -84,7 +84,7 @@ function editemp(empid){
         return;
     }
 
-    fetch(`https://login-employeemanagement-3.onrender.com/employee/findId/${empid}`,{
+    fetch(`https://helllo24.github.io/Login_FrontendProject/employee/findId/${empid}`,{
 
         headers : {
             "Authorization" : "Bearer " + localStorage.getItem("token")
@@ -108,7 +108,7 @@ function delemp(empid){
         return;
      }
 
-    fetch(`https://login-employeemanagement-3.onrender.com/employee/del_emp/${empid}`,{
+    fetch(`https://helllo24.github.io/Login_FrontendProject/employee/del_emp/${empid}`,{
 
         method : "DELETE",
 

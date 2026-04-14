@@ -18,7 +18,7 @@ document.getElementById("resetform").addEventListener("submit", async function(e
 
     try {
 
-        const response = await fetch("https://login-employeemanagement-3.onrender.com/auth/rest-password", {
+        const response = await fetch("https://helllo24.github.io/Login_FrontendProject/auth/rest-password", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"

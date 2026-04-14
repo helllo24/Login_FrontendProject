@@ -5,7 +5,7 @@ e.preventDefault();
 const username = document.getElementById("username").value;
 const password = document.getElementById("password").value;
 
-fetch("https://login-employeemanagement-3.onrender.com/auth/login",{
+fetch("https://helllo24.github.io/Login_FrontendProject/auth/login",{
 
 method:"POST",
 

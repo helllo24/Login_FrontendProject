@@ -18,7 +18,7 @@ return;
 
 const username = localStorage.getItem("username");
 
-fetch(`https://login-employeemanagement-3.onrender.com/auth/verify_otp?username=${username}&otp=${otp}`,{
+fetch(`https://helllo24.github.io/Login_FrontendProject/auth/verify_otp?username=${username}&otp=${otp}`,{
 method:"POST"
 })
 
