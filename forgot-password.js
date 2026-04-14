@@ -11,7 +11,7 @@ document.getElementById("retokenForm").addEventListener("submit", async function
 
     try {
 
-        const response = await fetch(`https://helllo24.github.io/Login_FrontendProject/auth/forgot-password?username=${username}`, {
+        const response = await fetch(`https://login-employeemanagement-3.onrender.com/auth/forgot-password?username=${username}`, {
             method: "POST"
         });
         if (!response.ok) {

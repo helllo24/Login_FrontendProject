@@ -9,7 +9,7 @@ document.getElementById("registerform").addEventListener("submit", function(e){
 
    //call api
 
-   fetch("https://helllo24.github.io/Login_FrontendProject/auth/register" , {
+   fetch("https://login-employeemanagement-3.onrender.com/auth/register" , {
     method : "POST",
      headers:{
         "Content-type" : "application/json"
