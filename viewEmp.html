@@ -6,9 +6,11 @@
 </head>
 
 <body>
+ 
 <div class="table-box">
 <h2>Employee List</h2>
-
+   <input type="text" id="searchbox"   style="width: 200px; height: 30px;  background-color: bisque;"  ><br>
+<button onclick="searchBtn()" style="width: 200px; height: 35px;  background-color: bisque;" >search</button  > 
 <table border="1">
 <thead>
 <tr>
@@ -114,6 +116,28 @@ function delemp(empid) {
 
 function BacktoDash(){
     window.location.href="admin-dashboard.html";
+}
+function searchBtn(){
+
+    const value = document.getElementById("searchBox").value;
+
+    fetch(`https://login-employeemanagement-3.onrender.com/employee/mail?empMailid=${value}`, {
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        console.log(data);
+
+        // 🔥 IMPORTANT FIX
+        const empList = data.content || data; 
+
+        displayEmployess(empList);
+
+    })
+    .catch(error => console.error("Error:", error));
 }
 
 // 🔥 initial load
