@@ -10,9 +10,9 @@
   
 </head>
 <body>
-    <button onclick="adminProfile()">adminProfile</button>
+    <button onclick="adminProfile()"  style="width: 200px; height: 35px;  background-color: bisque; ">adminProfile</button>
     
-    <button onclick="logout()">logout</button>
+    <button onclick="logout()" style="width: 200px; height: 35px;  background-color: bisque;">logout</button>
 
    
      <a href="departmentPage.html">ADD DEPARTMENT</a>
@@ -22,6 +22,66 @@
       
 
     <p id="profile"></p>
+     <div class="right-panel">
+
+        <div class="ai-box">
+            <h3>Ask AI 🤖</h3>
+
+            <div class="ai-messages" id="aiMessages">
+                <!-- messages will come here -->
+            </div>
+
+            <div class="ai-input">
+                <input type="text" id="aiInput" placeholder="Ask something...">
+                <button onclick="askAI()">Send</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 </body>
-<script src="admin-profile.js"></script>
+<script src="admin-profile.js">
+
+    function askAI(){
+
+  const question = document.getElementById("aiInput").value;
+    const box = document.getElementById("aiMessages");
+
+    if(!question) return;
+
+    // show user message
+    box.innerHTML += `<p><b>You:</b> ${question}</p>`;
+
+    fetch("https://login-employeemanagement-3.onrender.com/employee/askai", {
+        method: "POST",   // 🔥 IMPORTANT
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+            question: question
+        })
+    })
+    .then(res => res.text())   // or res.json() based on backend
+    .then(data => {
+
+        // show AI response
+        box.innerHTML += `<p><b>AI:</b> ${data}</p>`;
+
+        box.scrollTop = box.scrollHeight; // auto scroll
+    })
+    .catch(err => {
+        console.error(err);
+        box.innerHTML += `<p style="color:red;">Error connecting AI</p>`;
+    });
+
+    document.getElementById("aiInput").value = "";
+}
+
+
+
+
+</script>
+
 </html>
