@@ -1,36 +1,35 @@
- function askAI(){
-
-  const question = document.getElementById("aiInput").value;
+function askAI() {
+    const inputField = document.getElementById("aiInput");
     const box = document.getElementById("aiMessages");
+    const question = inputField.value.trim();
+    const token = localStorage.getItem("token");
 
-    if(!question) return;
+    if (!question) return;
 
-    // show user message
+    // Show user message
     box.innerHTML += `<p><b>You:</b> ${question}</p>`;
+    inputField.value = ""; // Clear input immediately for better UX
 
     fetch("https://login-employeemanagement-3.onrender.com/employee/askai", {
-        method: "POST",   // 🔥 IMPORTANT
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
+            "Authorization": "Bearer " + token
         },
-        body: JSON.stringify({
-            question: question
-        })
+        body: JSON.stringify({ question: question })
     })
-    .then(res => res.text())   // or res.json() based on backend
+    .then(res => {
+        if (!res.ok) {
+            throw new Error(`Server error: ${res.status}`);
+        }
+        return res.text();
+    })
     .then(data => {
-
-        // show AI response
         box.innerHTML += `<p><b>AI:</b> ${data}</p>`;
-
-        box.scrollTop = box.scrollHeight; // auto scroll
+        box.scrollTop = box.scrollHeight;
     })
     .catch(err => {
-        console.error(err);
-        box.innerHTML += `<p style="color:red;">Error connecting AI</p>`;
+        console.error("AI Error:", err);
+        box.innerHTML += `<p style="color:red;">Error: ${err.message}</p>`;
     });
-
-    document.getElementById("aiInput").value = "";
 }
-
