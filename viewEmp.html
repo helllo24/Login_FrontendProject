@@ -121,7 +121,7 @@ function searchBtn(){
 
     const value = document.getElementById("searchBox").value;
 
-    fetch(`https://login-employeemanagement-3.onrender.com/employee/mail?empMailid=${value}`, {
+    fetch(`https://login-employeemanagement-3.onrender.com/employee/mail?empName=${value}`, {
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token")
         }
